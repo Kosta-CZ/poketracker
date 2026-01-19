@@ -1,25 +1,30 @@
 body {
-  font-family: Arial, sans-serif;
-  padding: 16px;
+  margin: 0;
+  font-family: system-ui, Arial, sans-serif;
   background: #f4f4f4;
 }
 
-h1 {
-  text-align: center;
-}
-
-input, select, button {
-  width: 100%;
-  padding: 10px;
-  margin: 6px 0;
-  font-size: 16px;
-}
-
-button {
+header {
   background: #ff3d3d;
   color: white;
+  padding: 12px;
+}
+
+nav {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+nav button {
+  flex: 1;
+  padding: 8px;
   border: none;
   border-radius: 6px;
+}
+
+.hidden {
+  display: none;
 }
 
 ul {
@@ -29,74 +34,57 @@ ul {
 
 li {
   background: white;
+  margin: 8px;
   padding: 10px;
-  margin: 6px 0;
-  border-radius: 6px;
-}
-
-/* formulář */
-.hidden {
-  display: none;
-}
-
-/* našeptávač */
-.suggestions {
-  background: white;
-  border: 1px solid #ccc;
-  max-height: 180px;
-  overflow-y: auto;
-}
-
-.suggestions li {
-  cursor: pointer;
-}
-
-.suggestions li:hover {
-  background: #eee;
-}
-/* ===== KARTA ===== */
-li {
-  background: #fff;
-  padding: 12px;
-  border-radius: 10px;
-}
-
-/* ===== AKCE ===== */
-.actions {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 8px;
-}
-
-.count {
-  min-width: 24px;
-  text-align: center;
-  font-weight: bold;
-}
-
-/* ===== MALÁ TLAČÍTKA ===== */
-.icon {
-  width: 36px;
-  height: 36px;
-  padding: 0;
   border-radius: 8px;
-  font-size: 18px;
-  background: #eee;
-  color: #333;
 }
 
-.icon:hover {
-  background: #ddd;
+/* EDICE */
+#setsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 12px;
+  padding: 12px;
 }
 
-/* EDIT / DELETE */
-.icon.edit {
-  margin-left: auto;
-  background: #ffd966;
+.setCard {
+  background: white;
+  padding: 10px;
+  border-radius: 10px;
+  text-align: center;
 }
 
-.icon.delete {
-  background: #ff6b6b;
+.setCard img {
+  max-width: 100%;
+  height: 40px;
+  object-fit: contain;
+}
+
+/* KARTY */
+#cardsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 10px;
+  padding: 10px;
+}
+
+.card {
+  background: white;
+  border-radius: 8px;
+  padding: 6px;
+  text-align: center;
+}
+
+.card img {
+  width: 100%;
+}
+
+.card button {
+  margin-top: 4px;
+  width: 100%;
+  border: none;
+  padding: 6px;
+  border-radius: 6px;
+  background: #ff3d3d;
   color: white;
 }
