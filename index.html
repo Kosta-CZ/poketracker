@@ -1,42 +1,61 @@
 <!DOCTYPE html>
 <html lang="cs">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>PokéTracker</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#ff3d3d">
+
+  <!-- CSS -->
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <h1>🃏 PokéTracker</h1>
+  <!-- HLAVIČKA -->
+  <header>
+    <h1>🃏 PokéTracker</h1>
 
-<input id="search" placeholder="Hledat kartu…" />
+    <!-- TABS -->
+    <div class="tabs">
+      <button id="tabCollection" class="active">🃏 Sbírka</button>
+      <button id="tabSets">📦 Edice</button>
+    </div>
+  </header>
 
-<ul id="cardList"></ul>
+  <!-- OBSAH -->
+  <main>
 
-<button id="addBtn" type="button">➕ Přidat kartu</button>
+    <!-- SBÍRKA -->
+    <section id="collectionView">
+      <ul id="collectionList"></ul>
+    </section>
 
+    <!-- EDICE -->
+    <section id="setsView" class="hidden">
+      <div id="setsGrid"></div>
+    </section>
 
-  <div id="form" class="hidden">
-    <input id="name" placeholder="Pokémon" autocomplete="off">
-    <ul id="suggestions" class="suggestions hidden"></ul>
+    <!-- DETAIL EDICE -->
+    <section id="setDetailView" class="hidden">
+      <button id="backToSets">← Zpět na edice</button>
+      <h2 id="setTitle"></h2>
+      <div id="cardsGrid"></div>
+    </section>
 
-    <input id="cardName" placeholder="Název karty (např. Pikachu Base Set)">
+  </main>
 
-    <input id="set" placeholder="Edice">
-    <input id="number" placeholder="Číslo karty">
-
-    <select id="rarity">
-      <option>Common</option>
-      <option>Uncommon</option>
-      <option>Rare</option>
-      <option>Rare Holo</option>
-    </select>
-
-    <button id="saveBtn" type="button">Uložit kartu</button>
-
-  </div>
-
+  <!-- APP -->
   <script src="app.js"></script>
+
+  <!-- SERVICE WORKER -->
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("./sw.js");
+    }
+  </script>
+
 </body>
 </html>
