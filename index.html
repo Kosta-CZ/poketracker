@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <title>PokéTracker</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <h1>🃏 PokéTracker</h1>
+
+<input id="search" placeholder="Hledat kartu…" />
+
+<ul id="cardList"></ul>
+
+<button id="addBtn" type="button">➕ Přidat kartu</button>
+
+
+  <div id="form" class="hidden">
+    <input id="name" placeholder="Pokémon" autocomplete="off">
+    <ul id="suggestions" class="suggestions hidden"></ul>
+
+    <input id="cardName" placeholder="Název karty (např. Pikachu Base Set)">
+
+    <input id="set" placeholder="Edice">
+    <input id="number" placeholder="Číslo karty">
+
+    <select id="rarity">
+      <option>Common</option>
+      <option>Uncommon</option>
+      <option>Rare</option>
+      <option>Rare Holo</option>
+    </select>
+
+    <button id="saveBtn" type="button">Uložit kartu</button>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

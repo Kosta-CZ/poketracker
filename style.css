@@ -1,0 +1,102 @@
+body {
+  font-family: Arial, sans-serif;
+  padding: 16px;
+  background: #f4f4f4;
+}
+
+h1 {
+  text-align: center;
+}
+
+input, select, button {
+  width: 100%;
+  padding: 10px;
+  margin: 6px 0;
+  font-size: 16px;
+}
+
+button {
+  background: #ff3d3d;
+  color: white;
+  border: none;
+  border-radius: 6px;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+li {
+  background: white;
+  padding: 10px;
+  margin: 6px 0;
+  border-radius: 6px;
+}
+
+/* formulář */
+.hidden {
+  display: none;
+}
+
+/* našeptávač */
+.suggestions {
+  background: white;
+  border: 1px solid #ccc;
+  max-height: 180px;
+  overflow-y: auto;
+}
+
+.suggestions li {
+  cursor: pointer;
+}
+
+.suggestions li:hover {
+  background: #eee;
+}
+/* ===== KARTA ===== */
+li {
+  background: #fff;
+  padding: 12px;
+  border-radius: 10px;
+}
+
+/* ===== AKCE ===== */
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.count {
+  min-width: 24px;
+  text-align: center;
+  font-weight: bold;
+}
+
+/* ===== MALÁ TLAČÍTKA ===== */
+.icon {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border-radius: 8px;
+  font-size: 18px;
+  background: #eee;
+  color: #333;
+}
+
+.icon:hover {
+  background: #ddd;
+}
+
+/* EDIT / DELETE */
+.icon.edit {
+  margin-left: auto;
+  background: #ffd966;
+}
+
+.icon.delete {
+  background: #ff6b6b;
+  color: white;
+}
