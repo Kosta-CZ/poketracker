@@ -1,196 +1,125 @@
-document.addEventListener("DOMContentLoaded", () => {
+const API_KEY = "c3ea226b-e109-40a2-a15b-dc168911b428";
+const API = "https://api.pokemontcg.io/v2";
 
-  // =======================
-  // DATA
-  // =======================
-  const pokemonNames = [
-    "Bulbasaur","Ivysaur","Venusaur",
-    "Charmander","Charmeleon","Charizard",
-    "Squirtle","Wartortle","Blastoise",
-    "Pikachu","Raichu",
-    "Eevee","Vaporeon","Jolteon","Flareon",
-    "Mew","Mewtwo"
-  ];
+const headers = { "X-Api-Key": API_KEY };
 
-  const baseSetCards = {
-    "Bulbasaur": { set: "Base Set", number: "44/102", rarity: "Common" },
-    "Charmander": { set: "Base Set", number: "46/102", rarity: "Common" },
-    "Squirtle": { set: "Base Set", number: "63/102", rarity: "Common" },
-    "Pikachu": { set: "Base Set", number: "58/102", rarity: "Common" },
-    "Charizard": { set: "Base Set", number: "4/102", rarity: "Rare Holo" }
-  };
+const collectionView = document.getElementById("collectionView");
+const setsView = document.getElementById("setsView");
+const setDetailView = document.getElementById("setDetailView");
 
-  // =======================
-  // ELEMENTY
-  // =======================
-  const addBtn = document.getElementById("addBtn");
-  const saveBtn = document.getElementById("saveBtn");
-  const form = document.getElementById("form");
-  const list = document.getElementById("cardList");
+const collectionList = document.getElementById("collectionList");
+const setsGrid = document.getElementById("setsGrid");
+const cardsGrid = document.getElementById("cardsGrid");
+const setTitle = document.getElementById("setTitle");
 
-  const nameInput = document.getElementById("name");
-  const cardNameInput = document.getElementById("cardName");
-  const setInput = document.getElementById("set");
-  const numberInput = document.getElementById("number");
-  const rarityInput = document.getElementById("rarity");
-  const suggestions = document.getElementById("suggestions");
-  const searchInput = document.getElementById("search");
+const tabCollection = document.getElementById("tabCollection");
+const tabSets = document.getElementById("tabSets");
+const backToSets = document.getElementById("backToSets");
 
-  // =======================
-  // DATA
-  // =======================
-  let cards = JSON.parse(localStorage.getItem("cards")) || [];
-  let editId = null;
+let collection = JSON.parse(localStorage.getItem("collection")) || [];
 
-  // =======================
-  // NAŠEPTÁVAČ
-  // =======================
-  nameInput.addEventListener("input", () => {
-    const value = nameInput.value.toLowerCase();
-    suggestions.innerHTML = "";
+// ------------------ NAV ------------------
+tabCollection.onclick = () => showView("collection");
+tabSets.onclick = () => loadSets();
 
-    if (value.length < 2) {
-      suggestions.classList.add("hidden");
-      return;
-    }
+backToSets.onclick = () => {
+  setDetailView.classList.add("hidden");
+  setsView.classList.remove("hidden");
+};
 
-    pokemonNames
-      .filter(p => p.toLowerCase().includes(value))
-      .forEach(p => {
-        const li = document.createElement("li");
-        li.textContent = p;
+// ------------------ VIEW SWITCH ------------------
+function showView(view) {
+  collectionView.classList.add("hidden");
+  setsView.classList.add("hidden");
+  setDetailView.classList.add("hidden");
 
-        li.onclick = () => {
-          nameInput.value = p;
-          cardNameInput.value = `${p} Base Set`;
-
-          if (baseSetCards[p]) {
-            setInput.value = baseSetCards[p].set;
-            numberInput.value = baseSetCards[p].number;
-            rarityInput.value = baseSetCards[p].rarity;
-          }
-
-          suggestions.classList.add("hidden");
-        };
-
-        suggestions.appendChild(li);
-      });
-
-    suggestions.classList.remove("hidden");
-  });
-
-  document.addEventListener("click", e => {
-    if (!nameInput.contains(e.target)) {
-      suggestions.classList.add("hidden");
-    }
-  });
-
-  // =======================
-  // RENDER
-  // =======================
-function render(filter = "") {
-  list.innerHTML = "";
-
-  cards
-    .filter(c => {
-      const cardName = (c.cardName || "").toLowerCase();
-      const pokemon = (c.pokemon || "").toLowerCase();
-      const f = filter.toLowerCase();
-
-      return cardName.includes(f) || pokemon.includes(f);
-    })
-    .forEach(card => {
-      const li = document.createElement("li");
-      li.innerHTML = `
-        <strong>${card.cardName || "(bez názvu)"}</strong><br>
-        ${card.pokemon || ""} (${card.set || ""})<br>
-        <div class="actions">
-  <button class="icon" data-id="${card.id}" data-action="minus">−</button>
-  <span class="count">${card.count || 1}</span>
-  <button class="icon" data-id="${card.id}" data-action="plus">+</button>
-
-  <button class="icon edit" data-id="${card.id}" data-action="edit">✏️</button>
-  <button class="icon delete" data-id="${card.id}" data-action="delete">✕</button>
-</div>
-
-      `;
-      list.appendChild(li);
-    });
+  if (view === "collection") collectionView.classList.remove("hidden");
+  if (view === "sets") setsView.classList.remove("hidden");
 }
 
-
-  // =======================
-  // AKCE V SEZNAMU
-  // =======================
-  list.addEventListener("click", e => {
-    const id = e.target.dataset.id;
-    const action = e.target.dataset.action;
-    if (!id) return;
-
-    const card = cards.find(c => c.id === id);
-    if (!card) return;
-
-    if (action === "plus") card.count++;
-    if (action === "minus" && card.count > 1) card.count--;
-    if (action === "delete") cards = cards.filter(c => c.id !== id);
-
-    if (action === "edit") {
-      editId = id;
-      nameInput.value = card.pokemon;
-      cardNameInput.value = card.cardName;
-      setInput.value = card.set;
-      numberInput.value = card.number;
-      rarityInput.value = card.rarity;
-      form.classList.remove("hidden");
-      return;
-    }
-
-    localStorage.setItem("cards", JSON.stringify(cards));
-    render(searchInput.value);
+// ------------------ COLLECTION ------------------
+function renderCollection() {
+  collectionList.innerHTML = "";
+  collection.forEach(c => {
+    const li = document.createElement("li");
+    li.textContent = `${c.name} (${c.set}) ×${c.count}`;
+    collectionList.appendChild(li);
   });
+  localStorage.setItem("collection", JSON.stringify(collection));
+}
 
-  // =======================
-  // FORM
-  // =======================
-  addBtn.onclick = () => {
-    editId = null;
-    form.classList.remove("hidden");
-  };
+// ------------------ LOAD SETS ------------------
+async function loadSets() {
+  showView("sets");
+  setsGrid.innerHTML = "Načítám edice…";
 
-  saveBtn.onclick = () => {
-    if (!nameInput.value) return alert("Vyber Pokémona");
+  const res = await fetch(`${API}/sets`, { headers });
+  const data = await res.json();
 
-    if (editId) {
-      const card = cards.find(c => c.id === editId);
-      Object.assign(card, {
-        pokemon: nameInput.value,
-        cardName: cardNameInput.value,
-        set: setInput.value,
-        number: numberInput.value,
-        rarity: rarityInput.value
-      });
-    } else {
-      cards.push({
-        id: Date.now().toString(),   // ✅ OPRAVA
-        pokemon: nameInput.value,
-        cardName: cardNameInput.value,
-        set: setInput.value,
-        number: numberInput.value,
-        rarity: rarityInput.value,
-        count: 1
-      });
-    }
+  setsGrid.innerHTML = "";
 
-    localStorage.setItem("cards", JSON.stringify(cards));
-    form.classList.add("hidden");
-    nameInput.value = cardNameInput.value = setInput.value = numberInput.value = "";
-    render(searchInput.value);
-  };
+  data.data.forEach(set => {
+    const owned = collection.filter(c => c.setId === set.id).length;
+    const percent = ((owned / set.total) * 100).toFixed(1);
 
-  searchInput.addEventListener("input", e => render(e.target.value));
+    const div = document.createElement("div");
+    div.className = "setCard";
+    div.innerHTML = `
+      <img src="${set.images.logo}" alt="">
+      <strong>${set.name}</strong><br>
+      ${owned} / ${set.total} (${percent}%)
+    `;
 
-  // =======================
-  // INIT
-  // =======================
-  render();
-});
+    div.onclick = () => loadSetDetail(set);
+    setsGrid.appendChild(div);
+  });
+}
+
+// ------------------ SET DETAIL ------------------
+async function loadSetDetail(set) {
+  setsView.classList.add("hidden");
+  setDetailView.classList.remove("hidden");
+  setTitle.textContent = set.name;
+  cardsGrid.innerHTML = "Načítám karty…";
+
+  const res = await fetch(
+    `${API}/cards?q=set.id:${set.id}&pageSize=250`,
+    { headers }
+  );
+  const data = await res.json();
+
+  cardsGrid.innerHTML = "";
+
+  data.data.forEach(card => {
+    const div = document.createElement("div");
+    div.className = "card";
+    div.innerHTML = `
+      <img src="${card.images.small}">
+      <small>${card.number}/${set.total}</small>
+      <button>➕ Přidat</button>
+    `;
+
+    div.querySelector("button").onclick = () => {
+      const existing = collection.find(c => c.cardId === card.id);
+      if (existing) {
+        existing.count++;
+      } else {
+        collection.push({
+          cardId: card.id,
+          name: card.name,
+          set: set.name,
+          setId: set.id,
+          count: 1,
+          price: card.cardmarket?.prices?.averageSellPrice || null
+        });
+      }
+      renderCollection();
+    };
+
+    cardsGrid.appendChild(div);
+  });
+}
+
+// INIT
+renderCollection();
+showView("collection");
